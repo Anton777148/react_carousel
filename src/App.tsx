@@ -9,6 +9,7 @@ interface State {
     frameSize: number;
     step: number;
     animationDuration: number;
+    infinite: boolean;
   };
 }
 
@@ -35,13 +36,37 @@ class App extends React.Component<{}, State> {
     },
   };
 
+  // handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = event.target;
+
+  //   this.setState(prevState => ({
+  //     inputs: {
+  //       ...prevState.inputs,
+  //       [name]: value,
+  //     },
+  //   }));
+  // };
+
   handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+    const { name, value, type, checked } = event.target;
+
+    let newValue: string | number | boolean = value;
+
+    if (type === 'checkbox') {
+      newValue = checked;
+    } else if (
+      name === 'itemWidth' ||
+      name === 'frameSize' ||
+      name === 'step' ||
+      name === 'animationDuration'
+    ) {
+      newValue = parseInt(value, 10);
+    }
 
     this.setState(prevState => ({
       inputs: {
         ...prevState.inputs,
-        [name]: value,
+        [name]: newValue,
       },
     }));
   };

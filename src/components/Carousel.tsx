@@ -19,42 +19,26 @@ const Carousel: React.FC<Props> = ({
   infinite,
 }) => {
   const [offset, setOffset] = useState(0);
-  const [hasReachedEnd, setHasReachedEnd] = useState(false);
+
   const maxOffset = (images.length - frameSize) * itemWidth;
 
   const handleNext = () => {
     setOffset(prev => {
-      if (infinite && hasReachedEnd) {
-        setHasReachedEnd(false);
-
+      if (infinite && prev + step * itemWidth >= maxOffset) {
         return 0;
       }
 
-      const newOffset = Math.min(prev + step * itemWidth, maxOffset);
-
-      if (newOffset === maxOffset && infinite) {
-        setHasReachedEnd(true);
-      }
-
-      return newOffset;
+      return Math.min(prev + step * itemWidth, maxOffset);
     });
   };
 
   const handlePrev = () => {
     setOffset(prev => {
       if (infinite && prev === 0) {
-        setHasReachedEnd(true);
-
         return maxOffset;
       }
 
-      const newOffset = Math.max(prev - step * itemWidth, 0);
-
-      if (infinite) {
-        setHasReachedEnd(false);
-      }
-
-      return newOffset;
+      return Math.max(prev - step * itemWidth, 0);
     });
   };
 
@@ -80,7 +64,7 @@ const Carousel: React.FC<Props> = ({
         className="Carousel__list"
         style={{
           transform: `translateX(-${offset}px)`,
-          transition: `${animationDuration}ms`,
+          transition: `transform ${animationDuration}ms ease`,
         }}
       >
         {imageList}
